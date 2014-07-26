@@ -8,4 +8,8 @@ if (!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())) {
     $server->getResponse()->send();
     die;
 }
+
+$token = $server->getAccessTokenData(OAuth2\Request::createFromGlobals());
+print_r($token);
+
 echo json_encode(array('success' => true, 'message' => 'You accessed my APIs!'));

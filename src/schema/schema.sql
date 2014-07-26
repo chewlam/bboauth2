@@ -23,6 +23,7 @@ CREATE TABLE `oauth_authorization_codes` (
 CREATE TABLE `oauth_clients` (
   `client_id` varchar(80) NOT NULL,
   `client_secret` varchar(80) NOT NULL,
+  `client_name` varchar(100) NOT NULL,
   `redirect_uri` varchar(2000) NOT NULL,
   `grant_types` varchar(80) DEFAULT NULL,
   `scope` varchar(100) DEFAULT NULL,

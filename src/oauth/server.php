@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__.'/../conf/config.php';
+require_once __DIR__.'/../../conf/config.php';
+require_once __DIR__.'/../../vendor/autoload.php';
+
 
 $oauthdb = $config['oauthdb'];
 
@@ -12,7 +14,6 @@ ini_set('display_errors',1);error_reporting(E_ALL);
 
 // Autoloading (composer is preferred, but for this example let's just do this)
 #require_once('oauth2-server-php/src/OAuth2/Autoloader.php');
-require_once('../vendor/autoload.php');
 
 OAuth2\Autoloader::register();
 
@@ -23,7 +24,8 @@ $storage = new OAuth2\Storage\Pdo($dbconnect);
 
 $osrvrConfig = array(
     'require_exact_redirect_uri' => false,
-    'always_issue_new_refresh_token' => true);
+    'always_issue_new_refresh_token' => true,
+    'enforce_state' => false);
 
 
 $server = new OAuth2\Server($storage, $osrvrConfig);

@@ -1,7 +1,7 @@
 <?php
 
 // include our OAuth2 Server object
-require_once __DIR__.'/server.php';
+require_once __DIR__.'/../oauth/server.php';
 
 
 $request = OAuth2\Request::createFromGlobals();

@@ -1,0 +1,17 @@
+<html>
+<body>
+
+<?=$this->data['message'] ?>
+
+<BR>
+
+<form method="post">
+  <label>Do You Authorize <?=$this->data['client_name']?>?</label><br />
+  <input type="text" name="username">
+  <input type="password" name="password"> 
+  <input type="submit" name="authorized" value="yes">
+  <input type="submit" name="authorized" value="no">
+</form>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 {
     "require": {
-        "bshaffer/oauth2-server-php": "v1.3"
+        "bshaffer/oauth2-server-php": "v1.3",
+        "slim/slim": "2.*"
     }
 }

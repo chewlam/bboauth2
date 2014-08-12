@@ -11,18 +11,13 @@ class BBOAuthService {
         $this->oaResponse = new OAuth2\Response();
     }
 
-    protected function config($setting) {
-        global $_CONFIG;
-        return $_CONFIG[$setting];
-    }
-
     protected function getClientName($clientId) {
-        $p = 'oauthdb.';
-        $db = $this->config($p.'name');
-        $user = $this->config($p.'user');
-        $pass = $this->config($p.'password');
-        $host = $this->config($p.'host');
-        $port = $this->config($p.'port');
+        $p = 'db.oauth.';
+        $db   = Configure::get($p.'name');
+        $user = Configure::get($p.'user');
+        $pass = Configure::get($p.'password');
+        $host = Configure::get($p.'host');
+        $port = Configure::get($p.'port');
 
         $dsn = "mysql:dbname=$db;host=$host";
         $pdo = new PDO($dsn, $user, $pass);
@@ -38,13 +33,13 @@ class BBOAuthService {
         return $data[0]['client_name'];
     }
 
-    protected function checkPassword($username, $password){
-        $p = 'udb.';
-        $db = $this->config($p.'name');
-        $user = $this->config($p.'user');
-        $pass = $this->config($p.'password');
-        $host = $this->config($p.'host');
-        $port = $this->config($p.'port');
+    protected function confirmUser($username, $password){
+        $p = 'db.proficiency.';
+        $db   = Configure::get($p.'name');
+        $user = Configure::get($p.'user');
+        $pass = Configure::get($p.'password');
+        $host = Configure::get($p.'host');
+        $port = Configure::get($p.'port');
  
         $dsn = "mysql:dbname=$db;host=$host";
         $pdo = new PDO($dsn, $user, $pass);
@@ -56,7 +51,7 @@ class BBOAuthService {
         if (count($data) > 0) {
             $data = $data[0];
             $hash = crypt($password, $data['password']);
-            if (strcmp($hash, $data['password'])===0) {
+            if ($password === false || strcmp($hash, $data['password'])===0) {
                 return $data['id'];
             }
         }
@@ -93,26 +88,61 @@ class BBOAuthService {
             die;
         }
 
-        $clientId = $this->oaRequest->query['client_id'];
+        $userId = false;
+        $authorized = ($this->oaRequest->request['authorized'] === 'yes');
 
-        $username = $this->oaRequest->request['username'];
-        $password = $this->oaRequest->request['password'];
-        $authorized = $this->oaRequest->request['authorized'];
+        if ($authorized) {
+            $username = $this->oaRequest->request['username'];
+            $password = $this->oaRequest->request['password'];
 
-        if (empty($username) || empty($password) || empty($authorized)) {
-            throw new Exception('Missing required fields', 401);
-        }
-
-        $userId = $this->checkPassword($username, $password);
-        if ($userId === false) {
-            throw new Exception('Incorrect login', 401);
+            if (empty($username) || empty($password)) {
+                throw new Exception('Missing required fields', 401);
+            }
+        
+            $userId = $this->confirmUser($username, $password);
+            if ($userId === false) {
+                throw new Exception('Incorrect login', 401);
+            }
         }
 
         // print the authorization code if the user has authorized your client
-        $this->oaServer->handleAuthorizeRequest($this->oaRequest, $this->oaResponse, ($authorized === 'yes'), $userId);
+        $this->oaServer->handleAuthorizeRequest($this->oaRequest, $this->oaResponse, $authorized, $userId);
         $this->oaResponse->send();
         return true;
     }
+
+    // INTERNAL USE ONLY.  SCOPE is presumed to have already been checked and confirmed.
+    // Admin level functionality for our internal servers to create authorization codes for a client
+    // on behalf of a user.  This is useful for outbound SSO functionality.
+    public function superauthorize() {
+
+        // validate the authorize request
+        if (!$this->oaServer->validateAuthorizeRequest($this->oaRequest, $this->oaResponse)) {
+            $this->oaResponse->send();
+            die;
+        }
+
+        $userId = false;
+        $authorized = true;
+
+        $username = $this->oaRequest->request['username'];
+
+        if (empty($username)) {
+            throw new Exception('Missing required fields', 401);
+        }
+        
+        $userId = $this->confirmUser($username, false);
+        if ($userId === false) {
+            throw new Exception('Unknown user', 401);
+        }
+
+        // print the authorization code if the user has authorized your client
+        $this->oaServer->handleAuthorizeRequest($this->oaRequest, $this->oaResponse, $authorized, $userId);
+        $this->oaResponse->send();
+        return true;
+    }
+
+
 }
 
 

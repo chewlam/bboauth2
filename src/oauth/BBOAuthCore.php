@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__.'/../../conf/config.php';
-require_once __DIR__.'/../../vendor/autoload.php';
+require_once APP_DIR.'/Configure.php';
+require_once APP_DIR.'/../vendor/autoload.php';
 
 
 class BBOAuthCore {
@@ -14,11 +14,6 @@ class BBOAuthCore {
         return $_instance;
     }
 
-    public static function config($setting) {
-        global $_CONFIG;
-        return $_CONFIG[$setting];
-    }
-
     static $_SRVR_CONFIG = array(
         'require_exact_redirect_uri' => false,
         'always_issue_new_refresh_token' => true,
@@ -27,12 +22,12 @@ class BBOAuthCore {
 
 
     protected function init() {
-
-        $oaname = static::config('oauthdb.name');
-        $oauser = static::config('oauthdb.user');
-        $oapass = static::config('oauthdb.password');
-        $oahost = static::config('oauthdb.host');
-        $oaport = static::config('oauthdb.port');
+        $p = 'db.oauth.';
+        $oaname = Configure::get($p.'name');
+        $oauser = Configure::get($p.'user');
+        $oapass = Configure::get($p.'password');
+        $oahost = Configure::get($p.'host');
+        $oaport = Configure::get($p.'port');
 
         $dsn = "mysql:dbname=$oaname;host=$oahost";
         $dbconnect = array('dsn' => $dsn, 'username' => $oauser, 'password' => $oapass);
@@ -63,3 +58,5 @@ class BBOAuthCore {
         return $server;
     }
 }
+
+

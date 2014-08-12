@@ -1,0 +1,84 @@
+server {
+    listen 443;
+    client_max_body_size 20M;
+
+    #Please let IE use Chome Frame!
+    add_header "X-UA-Compatible" "IE=Edge,chrome=1"; 
+
+    server_name api.bloomboard.com;
+    access_log /var/log/nginx.access.log;
+    error_log  /var/log/nginx.error.log;
+    root /var/www/src/;
+
+    ssl on;
+    ssl_certificate /etc/ssl/certs/ssl.crt;
+    ssl_certificate_key /etc/ssl/private/ssl.key;
+
+    ssl_session_timeout 5m;
+
+    ssl_protocols SSLv3 SSLv2 TLSv1;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+SSLv3:!EXPORT:!SSLv2:+EXP;
+    ssl_prefer_server_ciphers on;
+
+
+    location / {
+        index  index.php index.html index.htm;
+        try_files $uri  /index.php?$uri&$args;
+
+        # How long to wait for a response
+        proxy_read_timeout 6000;
+        send_timeout 6000;
+    }
+
+
+    location ~* \.(eot|ttf|woff)$ {
+        add_header Access-Control-Allow-Origin *;
+        access_log off;
+        expires 7d;
+        add_header Cache-Control public;
+    }
+
+    location ~ .*\.php[345]?$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include        /etc/nginx/fastcgi_params;
+    }
+        # Static files.
+    # Set expire headers, Turn off access log
+    location ~* \favicon.ico$ {
+        access_log off;
+        expires 1d;
+        add_header Cache-Control public;
+    }
+    location ~ ^/(img|cjs|ccss|fonts|flash)/ {
+        access_log off;
+        expires 7d;
+        add_header Cache-Control public;
+    }
+ 
+    # Deny access to .htaccess files,
+    # git & svn repositories, etc
+    location ~ /(\.ht|\.git|\.svn) {
+        deny  all;
+    }
+    location = /status {
+        deny  all;
+        allow 10.0.0.0/8;
+        allow 127.0.0.1;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /status;
+        fastcgi_pass 127.0.0.1:9000;
+        access_log off;
+    }
+
+    location = /DA-status {
+        include /etc/nginx/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /status;
+        fastcgi_param SCRIPT_NAME /status;
+        fastcgi_pass 127.0.0.1:9000;
+        access_log off;
+    }   
+
+}
+

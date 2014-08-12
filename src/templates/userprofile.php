@@ -5,7 +5,7 @@ $q = array('email', 'last_name', 'first_name', 'time_zone');
 
 $sql = "select ".implode(',', $q)." from t_users where id=:user_id";
 
-$p = 'udb.';
+$p = 'db.proficiency.';
 
 GLOBAL $_CONFIG;
 

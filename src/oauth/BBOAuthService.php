@@ -1,18 +1,19 @@
 <?php
 
 // include our OAuth2 Server object
-require_once __DIR__.'/server.php';
+require_once __DIR__.'/BBOAuthCore.php';
 
 class BBOAuthService {
     function __construct() {
-        $this->oaServer = OAuthCore::getInstance();
+        $this->oaServer = BBOAuthCore::getInstance();
 
         $this->oaRequest = OAuth2\Request::createFromGlobals();
         $this->oaResponse = new OAuth2\Response();
     }
 
     protected function config($setting) {
-        return OAuthCore::config($setting);
+        global $_CONFIG;
+        return $_CONFIG[$setting];
     }
 
     protected function getClientName($clientId) {

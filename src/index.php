@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../conf/config.php';
 require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/oauth/authorize.php';
+require_once __DIR__.'/oauth/BBOAuthService.php';
 
 
 $_CONFIG['templates.path'] = __DIR__.'/templates';
@@ -35,6 +35,17 @@ $app->get('/user/profile',
 
 $app->post('/oauth/authorize\?:qstring', 
            function() use ($app, $oaservice) {
+               try {
+                   $success = $oaservice->authorize(); 
+               } catch (Exception $e) {
+                   $app->halt($e->getCode(), $e->getMessage());
+               }
+           });
+
+$app->post('/oauth/super_authorize\?:qstring', 
+           function() use ($app, $oaservice) {
+              $token = $oaservice->assertRequiredScope('super_admin');
+
                try {
                    $success = $oaservice->authorize(); 
                } catch (Exception $e) {

@@ -4,7 +4,7 @@ require_once __DIR__.'/../../conf/config.php';
 require_once __DIR__.'/../../vendor/autoload.php';
 
 
-class OAuthCore {
+class BBOAuthCore {
 
     public static function getInstance() {
         static $_instance;

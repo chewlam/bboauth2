@@ -1,17 +1,86 @@
 <html>
-<body>
 
-<?=$this->data['message'] ?>
+<style>
+#layout-top{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background-color: #f7a53a;
+}
 
-<BR>
+.login {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    color: #808080;
+}
 
-<form method="post">
-  <label>Do You Authorize <?=$this->data['client_name']?>?</label><br />
-  <input type="text" name="username">
-  <input type="password" name="password"> 
-  <input type="submit" name="authorized" value="yes">
-  <input type="submit" name="authorized" value="no">
-</form>
+p {
+    width: 340px;
+    text-align: left;
+}
 
+ul li {
+    text-align: left;
+}
+
+input[type=text], input[type=password] {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    color: #808080;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 4px;
+    margin-top: 10px;
+}
+
+button {
+    padding: 4px;
+    color: #808080;
+    width: 50px;
+    margin: 10px;
+}
+
+.login .centered{
+    text-align: center;
+    margin: 0 auto;
+    padding: 30px 0 20px;    
+    width:  350px;
+}
+
+.login .logo{
+    width: 250px; /* Width of image */
+}
+
+</style>
+
+<body class="login">
+  <div id="layout-top">&nbsp</div>
+
+  <?=$this->data['message'] ?>
+
+  <BR>
+  <div class='centered'>
+    <div class="logo-box">
+      <img class="logo" src="https://production2-web-application.s3.amazonaws.com/img/logo-centered.png" />
+    </div>
+
+    <p><b>An application would like to access your account.</b></p>
+    <p>The application <b><?=$this->data['client_name']?></b>
+       would like access to your basic profile information, which includes
+       first name, last name, and email address.</p>
+    <br>
+
+    <form method="post">
+      <label>Do you authorize <?=$this->data['client_name']?>?</label><br />
+      <input type="text" name="username" placeholder="Email Address"> <br>
+      <input type="password" name="password" placeholder="Password"> <br> 
+      <button type="submit" name="authorized" value="Yes">Allow</button>
+      <button type="submit" name="authorized" value="No">Deny</button>
+    </form>
+  </div>
 </body>
 </html>

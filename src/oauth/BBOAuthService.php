@@ -122,16 +122,20 @@ class BBOAuthService {
             die;
         }
 
-        $userId = false;
         $authorized = true;
+        $r = $this->oaRequest->request;
 
-        $username = $this->oaRequest->request['username'];
-
-        if (empty($username)) {
-            throw new Exception('Missing required fields', 401);
-        }
+        $userId = isset($r['userid']) ? $r['userid'] : false;
+        if (empty($userId)) {
+            $username = $r['username'];
+ 
+            if (empty($username)) {
+                throw new Exception('Missing required fields', 401);
+            }
         
-        $userId = $this->confirmUser($username, false);
+            $userId = $this->confirmUser($username, false);
+        }
+
         if ($userId === false) {
             throw new Exception('Unknown user', 401);
         }

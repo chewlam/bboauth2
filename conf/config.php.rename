@@ -4,15 +4,15 @@ $_CONFIG = array(
     'slim' => array('debug' => true,
                     'templates.path' => APP_DIR.'/templates'),
 
-    'db.proficiency.user' => 'bloomboard',
+    'db.proficiency.user' => 'user',
     'db.proficiency.password' => 'password',
-    'db.proficiency.host' => '172.17.0.3',
+    'db.proficiency.host' => 'xxx.xxx.xxx.xxx',
     'db.proficiency.port' => 3306,
     'db.proficiency.name' => 'Proficiency',
 
-    'db.oauth.user' => 'bloomboard',
+    'db.oauth.user' => 'user',
     'db.oauth.password' => 'password',
-    'db.oauth.host' => '172.17.0.3',
+    'db.oauth.host' => 'xxx.xxx.xxx.xxx',
     'db.oauth.port' => 3306,
     'db.oauth.name' => 'oauth',
 );
